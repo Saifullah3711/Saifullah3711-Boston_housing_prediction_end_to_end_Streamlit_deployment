@@ -1,6 +1,10 @@
 import streamlit as st
 import numpy as np
 from joblib import dump, load
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+
 
 model = load("HousingPrice.joblib") 
 
@@ -25,6 +29,8 @@ def User_input():
     LSTAT = st.number_input(label="LSTAT", step=1.0, format="%.2f")
     
     resultant_np_array = np.array([[CRIM, ZN, INDUS, CHAS, NOX, RM, AGE, DIS, RAD, TAX, PTRATIO, B, LSTAT]])
+
+    resultant_np_array = scaler.fit_transform(resultant_np_array)
    
     return resultant_np_array
 
@@ -37,5 +43,7 @@ values_for_model = User_input()
 button_press = st.button("Predict")
 if button_press:
    model_prediction = model.predict(values_for_model)
-   st.title(f"Predicted Price is { model_prediction * 1000 }$")
+   print(model_prediction)
+   st.title(f"Predicted Price is almost { model_prediction[0] * 1000 }$")
 #---------------------------------------------------------------------------------
+
